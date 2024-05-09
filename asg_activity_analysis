@@ -54,7 +54,8 @@ def write_scaling_activities(auto_scaling_group_name: str, scaling_activities: l
         worksheet.write(row, col, activity.description)
         worksheet.write(row, col + 1, activity.cause, text_wrap)
         worksheet.write_datetime(row, col + 2, activity.start_time)
-        worksheet.write_datetime(row, col + 3, activity.end_time)
+        if activity.end_time:
+            worksheet.write_datetime(row, col + 3, activity.end_time)
 
         row += 1
 
@@ -90,7 +91,8 @@ def get_scaling_activities(auto_scaling_group_name: str) -> list[ScalingActivity
             activity["Description"],
             activity["Cause"],
             activity["StartTime"],
-            activity["EndTime"]
+            # If the scaling activity is in-progress.
+            activity["EndTime"] if "EndTime" in activity else None
         ))
 
     return activities
